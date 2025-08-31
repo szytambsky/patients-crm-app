@@ -1,5 +1,6 @@
 package com.pmpatient.patientservice.domain.mapper;
 
+import com.pmpatient.patientservice.infrastracture.input.PatientRequestDto;
 import com.pmpatient.patientservice.infrastracture.output.PatientResponseDto;
 import com.pmpatient.patientservice.model.Patient;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 public class PatientMapper {
     private static final String DIGITAL_DOT_DATE_FORMAT = "dd.MM.yyyy";
 
-    public PatientResponseDto toPatientResponseDto(Patient patient) {
+    public static PatientResponseDto toResponseDto(Patient patient) {
         String uuid = patient.getId().toString();
         String name = patient.getName();
         String address = patient.getAddress();
@@ -20,7 +21,18 @@ public class PatientMapper {
         return new PatientResponseDto(uuid, name, email, address, digitalDate);
     }
 
+    public static Patient toModel(PatientRequestDto patientRequestDto) {
+        Patient patient = new Patient();
+        patient.setName(patientRequestDto.getName());
+        patient.setEmail(patientRequestDto.getEmail());
+        patient.setAddress(patientRequestDto.getAddress());
+        patient.setDateOfBirth(LocalDate.parse(patientRequestDto.getDateOfBirth(), DateTimeFormatter.ISO_DATE));
+        patient.setRegisteredDate(LocalDate.parse(patientRequestDto.getRegisteredDate()));
+        return patient;
+    }
+
     private static String retrieveDigitalDateRecordingWithSeparate() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern(DIGITAL_DOT_DATE_FORMAT));
     }
+
 }

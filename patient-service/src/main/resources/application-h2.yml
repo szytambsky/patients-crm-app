@@ -16,5 +16,11 @@ spring:
   sql:
     init:
       mode: always
+logging:
+  level:
+    root: info
+    org:
+      hibernate:
+        SQL: debug
 server:
   port: 4000
