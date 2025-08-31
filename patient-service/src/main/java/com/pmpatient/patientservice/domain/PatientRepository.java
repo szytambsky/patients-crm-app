@@ -1,6 +1,6 @@
 package com.pmpatient.patientservice.domain;
 
-import com.pmpatient.patientservice.model.Patient;
+import com.pmpatient.patientservice.domain.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

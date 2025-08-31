@@ -3,7 +3,7 @@ POST http://localhost:4000/patients
 Content-Type: application/json
 
 {
-  "name": "John Doe",
+  "name": "Jane Doe",
   "email": "johndoefromeu@example.com",
   "address": "Warsaw ul Marszałkowska 21/23",
   "dateOfBirth": "1977-08-28",

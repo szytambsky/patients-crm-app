@@ -2,16 +2,15 @@ package com.pmpatient.patientservice.infrastracture.output.rest;
 
 import com.pmpatient.patientservice.domain.PatientService;
 import com.pmpatient.patientservice.infrastracture.input.PatientRequestDto;
+import com.pmpatient.patientservice.infrastracture.input.validators.CreatePatientValidationGroup;
 import com.pmpatient.patientservice.infrastracture.output.PatientResponseDto;
-import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/patients")
@@ -29,8 +28,16 @@ public class PatientController {
     }
 
     @PostMapping
-    public ResponseEntity<PatientResponseDto> createPatient(@Valid @RequestBody PatientRequestDto patientRequestDto) {
+    public ResponseEntity<PatientResponseDto> createPatient(@Validated({Default.class, CreatePatientValidationGroup.class})
+                                                            @RequestBody PatientRequestDto patientRequestDto) {
         PatientResponseDto createdPatient = patientService.createPatient(patientRequestDto);
         return ResponseEntity.ok().body(createdPatient);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientResponseDto> updatePatient(@PathVariable UUID id,
+                                                            @Validated({Default.class}) @RequestBody PatientRequestDto patientRequestDto) {
+        PatientResponseDto patientResponseDto = patientService.updatePatient(id, patientRequestDto);
+        return ResponseEntity.ok().body(patientResponseDto);
     }
 }

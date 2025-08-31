@@ -2,7 +2,7 @@ package com.pmpatient.patientservice.domain.mapper;
 
 import com.pmpatient.patientservice.infrastracture.input.PatientRequestDto;
 import com.pmpatient.patientservice.infrastracture.output.PatientResponseDto;
-import com.pmpatient.patientservice.model.Patient;
+import com.pmpatient.patientservice.domain.model.Patient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

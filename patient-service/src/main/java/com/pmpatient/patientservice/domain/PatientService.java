@@ -1,13 +1,16 @@
 package com.pmpatient.patientservice.domain;
 
 import com.pmpatient.patientservice.domain.mapper.PatientMapper;
+import com.pmpatient.patientservice.infrastracture.exceptions.patient.PatientNotFoundException;
 import com.pmpatient.patientservice.infrastracture.exceptions.patient.EmailAlreadyExistsException;
 import com.pmpatient.patientservice.infrastracture.input.PatientRequestDto;
 import com.pmpatient.patientservice.infrastracture.output.PatientResponseDto;
-import com.pmpatient.patientservice.model.Patient;
+import com.pmpatient.patientservice.domain.model.Patient;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PatientService {
@@ -28,6 +31,20 @@ public class PatientService {
         doesEmailAlreadyExists(patientRequestDto);
         Patient newPatient = patientRepository.save(PatientMapper.toModel(patientRequestDto));
         return PatientMapper.toResponseDto(newPatient);
+    }
+
+    public PatientResponseDto updatePatient(UUID patientId, PatientRequestDto patientRequestDto) {
+        Patient patient = patientRepository.findById(patientId).orElseThrow(() ->
+                new PatientNotFoundException("Patient not found with id: ", patientId));
+        doesEmailAlreadyExists(patientRequestDto);
+
+        patient.setName(patientRequestDto.getName());
+        patient.setAddress(patientRequestDto.getAddress());
+        patient.setEmail(patientRequestDto.getEmail());
+        patient.setDateOfBirth(LocalDate.parse(patientRequestDto.getDateOfBirth()));
+
+        Patient updatedPatient = patientRepository.save(patient);
+        return PatientMapper.toResponseDto(updatedPatient);
     }
 
     private void doesEmailAlreadyExists(PatientRequestDto patientRequestDto) {
