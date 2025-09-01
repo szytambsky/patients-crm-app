@@ -48,6 +48,10 @@ public class PatientService {
         return PatientMapper.toResponseDto(updatedPatient);
     }
 
+    public void deletePatient(UUID patientId) {
+        patientRepository.deleteById(patientId);
+    }
+
     private void doesEmailAlreadyExists(PatientRequestDto patientRequestDto) {
         if (patientRepository.existsByEmail(patientRequestDto.getEmail())) {
             throw new EmailAlreadyExistsException("A patient with this email already exists: "
