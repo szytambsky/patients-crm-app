@@ -39,6 +39,7 @@ public class PatientController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new Patient")
     public ResponseEntity<PatientResponseDto> createPatient(@Validated({Default.class, CreatePatientValidationGroup.class})
                                                             @RequestBody PatientRequestDto patientRequestDto) {
         PatientResponseDto createdPatient = patientService.createPatient(patientRequestDto);
@@ -46,6 +47,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update a Patient")
     public ResponseEntity<PatientResponseDto> updatePatient(@PathVariable UUID id,
                                                             @Validated({Default.class}) @RequestBody PatientRequestDto patientRequestDto) {
         PatientResponseDto patientResponseDto = patientService.updatePatient(id, patientRequestDto);
@@ -53,6 +55,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a Patient")
     public ResponseEntity<Void> deletePatient(@PathVariable UUID id) {
         patientService.deletePatient(id);
         return ResponseEntity.noContent().build();
