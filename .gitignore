@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 *.mvnw
+*.env
 
 ### STS ###
 .apt_generated
@@ -19,8 +20,6 @@ target/
 *.iws
 *.iml
 *.ipr
-*.env
-/*/.env
 
 ### NetBeans ###
 /nbproject/private/
@@ -40,3 +39,4 @@ build/
 /*/mvnw
 /*/.mvn/wrapper/maven-wrapper.properties
 /*/.gitattributes
+/*/.env
