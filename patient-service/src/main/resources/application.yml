@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: patient-service
+server:
+  port: 8080
