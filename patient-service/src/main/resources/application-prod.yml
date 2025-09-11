@@ -1,5 +1,8 @@
 spring:
-  application:
-    name: patient-service
+  config.activate.on-profile: prod
+logging:
+  level:
+    root: warn
+    org.hibernate.SQL: info
 server:
   port: 8082

@@ -1,0 +1,9 @@
+spring:
+  config.activate.on-profile: staging
+logging:
+  level:
+    org.springframework: info
+    root: info
+    org.hibernate.SQL: info
+server:
+  port: 8081
