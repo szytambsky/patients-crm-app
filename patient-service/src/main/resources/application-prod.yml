@@ -1,8 +1,19 @@
 spring:
   config.activate.on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    properties:
+      properties.hibernate.format_sql: true
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update # validate, schema managing migration tool
+    show-sql: true # false
+  sql.init.mode: always # never
 logging:
   level:
     root: warn
-    org.hibernate.SQL: info
 server:
   port: 8082
