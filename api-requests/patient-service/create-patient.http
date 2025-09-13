@@ -3,8 +3,8 @@ POST http://localhost:8080/patients
 Content-Type: application/json
 
 {
-  "name": "Jane Doe",
-  "email": "johndoefromeu@example.com",
+  "name": "Jane Doe with billing account",
+  "email": "jd_billing_account@example.com",
   "address": "Warsaw ul Marszałkowska 21/23",
   "dateOfBirth": "1977-08-28",
   "registeredDate": "2025-07-15"
