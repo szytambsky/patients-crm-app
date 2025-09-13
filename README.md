@@ -4,7 +4,7 @@
 
 ### dev
 ```bash
-docker compose up -d
+docker compose -f ./docker-compose.dev.yml up -d
 ```
 ### staging
 ```bash
@@ -19,7 +19,7 @@ docker compose -f ./docker-compose.prod.yml up -d
 
 ### dev
 ```bash
-docker compose stop
+docker compose -f ./docker-compose.dev.yml stop
 ```
 ### staging
 ```bash
