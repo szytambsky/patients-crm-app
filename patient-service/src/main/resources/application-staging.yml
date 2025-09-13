@@ -17,5 +17,3 @@ logging:
     org.springframework: info
     root: info
     org.hibernate.SQL: info
-server:
-  port: 8081
