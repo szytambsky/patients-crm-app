@@ -12,6 +12,9 @@ spring:
       ddl-auto: update
     show-sql: true
   sql.init.mode: always
+billing:
+  service:
+    address: localhost
 logging:
   level:
     root: info

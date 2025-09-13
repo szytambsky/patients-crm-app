@@ -9,5 +9,5 @@ FROM eclipse-temurin:24-jre AS runner
 WORKDIR /app
 COPY --from=builder ./app/target/billing-service-0.0.1-SNAPSHOT.jar ./app.jar
 EXPOSE 8081
-EXPOSE 9090
+EXPOSE 9091
 ENTRYPOINT ["java", "--sun-misc-unsafe-memory-access=allow", "-jar", "app.jar"]

@@ -12,6 +12,9 @@ spring:
       ddl-auto: update # validate, schema managing migration tool
     show-sql: true # false
   sql.init.mode: always # never
+billing:
+  service:
+    address: billing-service
 logging:
   level:
     root: warn
