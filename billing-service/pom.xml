@@ -46,7 +46,8 @@
             <scope>test</scope>
         </dependency>
 
-        <!--GRPC -->
+        <!--GRPC https://github.com/netty/netty/issues/14942 in future version of JDK, deprecated
+         Unsafe::objectFieldOffset will be replaced with VarHandle which is a safer option -->
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>
