@@ -47,7 +47,8 @@
         </dependency>
 
         <!--GRPC https://github.com/netty/netty/issues/14942 in future version of JDK, deprecated
-         Unsafe::objectFieldOffset will be replaced with VarHandle which is a safer option -->
+         Unsafe::objectFieldOffset will be replaced with VarHandle which is a safer option
+         https://openjdk.org/jeps/498 ~ `JDK 26 or later will throw an exception whenever a memory-access method is used, whether directly or via reflection` -->
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>
