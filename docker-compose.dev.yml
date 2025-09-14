@@ -56,3 +56,4 @@ volumes:
 networks:
   patient-network:
     driver: bridge
+    external: true
