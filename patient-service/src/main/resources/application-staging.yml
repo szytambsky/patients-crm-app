@@ -1,5 +1,5 @@
 spring:
-  config.activate.on-profile: prod
+  config.activate.on-profile: staging
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}

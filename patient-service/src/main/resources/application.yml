@@ -3,6 +3,9 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari.maximum-pool-size: 12
+  kafka.producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
 server:
   port: 8080
 grpc:
