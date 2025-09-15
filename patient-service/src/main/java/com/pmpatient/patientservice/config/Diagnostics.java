@@ -15,12 +15,6 @@ public class Diagnostics {
     }
 
     @Bean
-    @Profile("staging")
-    public CommandLineRunner runStaging() {
-        return (args) -> System.out.println("Hello from staging");
-    }
-
-    @Bean
     @Profile("prod")
     public CommandLineRunner runProduction() {
         return (args) -> System.out.println("Hello from production");

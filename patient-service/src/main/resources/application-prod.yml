@@ -17,4 +17,6 @@ billing:
     address: billing-service
 logging:
   level:
-    root: warn
+    org.springframework: info
+    root: info
+    org.hibernate.SQL: info
