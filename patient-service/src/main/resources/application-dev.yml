@@ -18,4 +18,4 @@ billing:
 logging:
   level:
     root: info
-    org.hibernate.SQL: debug
+    org.hibernate.SQL: info

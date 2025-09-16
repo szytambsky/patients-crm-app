@@ -1,6 +1,7 @@
 spring:
   application:
     name: billing-service
+logging.level.root: info
 server:
   port: 8081
 grpc:
