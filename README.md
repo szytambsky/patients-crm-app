@@ -11,6 +11,15 @@ Services are communicating inside internal pre-created 🐳 Docker network by ho
 
 
 ## Services Start
+
+create network external network (one-time use only)
+
+TODO: by script ansible/terraform/init.sh
+
+```bash
+docker network create --driver bridge patient-network
+````
+
 ### dev
 ```bash
 docker compose -f ./docker-compose.dev.yml up -d
