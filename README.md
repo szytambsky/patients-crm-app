@@ -1,5 +1,8 @@
 # Patient Service – local setup
 
+## Get it started
+> cp .env.example .env
+
 ## 🔌 Kafka connection
 
 👉 **Dev (local)**  
