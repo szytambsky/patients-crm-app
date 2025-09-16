@@ -12,6 +12,8 @@ spring:
       ddl-auto: update # validate, schema managing migration tool
     show-sql: true # false
   sql.init.mode: always # never
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
 billing:
   service:
     address: billing-service

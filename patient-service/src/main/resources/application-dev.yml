@@ -12,6 +12,8 @@ spring:
       ddl-auto: update
     show-sql: true
   sql.init.mode: always
+  kafka:
+    bootstrap-servers: localhost:9094
 billing:
   service:
     address: localhost
