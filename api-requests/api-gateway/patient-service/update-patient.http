@@ -1,0 +1,11 @@
+### Update existing entity
+PUT http://localhost:7950/api/patients/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "name": "John Doe III",
+  "email": "test_update@example.com",
+  "address": "Warsaw al. Jerozolimskie 80",
+  "dateOfBirth": "1977-08-28"
+}
+###
