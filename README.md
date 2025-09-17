@@ -29,3 +29,9 @@ docker compose -f ./docker-compose.dev.yml up -d
 ```bash
 docker compose -f ./docker-compose.dev.yml -f infra/docker-compose.kafka.yml up -d
 ```
+
+### prod
+```bash
+docker compose -f ./docker-compose.prod.yml -f infra/docker-compose.kafka.yml up -d
+```
+
