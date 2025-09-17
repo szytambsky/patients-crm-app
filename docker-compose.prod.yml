@@ -6,8 +6,6 @@ services:
       - .env
     environment:
       SPRING_PROFILES_ACTIVE: prod
-    ports:
-      - "8080:8080"
     networks:
       - patient-network
     depends_on:

@@ -1,0 +1,15 @@
+services:
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    env_file:
+      - .env
+    ports:
+      - "7950:7950"
+    networks:
+      - patient-network
+
+networks:
+  patient-network:
+    external: true
