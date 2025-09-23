@@ -39,5 +39,15 @@ docker compose -f ./docker-compose.prod.yml -f infra/docker-compose.kafka.yml up
 ```bash
 docker compose -f ./docker-compose.prod.yml \
                -f infra/docker-compose.kafka.yml \
-               -f infra/docker-compose.gateway.yml up -d
+               -f infra/docker-compose.gateway.yml up -d --build --force-recreate
 ```
+
+### with auth-service prod
+```bash
+docker compose -f ./docker-compose.prod.yml \
+               -f infra/docker-compose.kafka.yml \
+               -f infra/docker-compose.gateway.yml \
+               -f infra/docker-compose.auth.yml up -d --build --force-recreate
+```
+
+

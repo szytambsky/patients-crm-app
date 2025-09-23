@@ -1,0 +1,14 @@
+spring:
+  application.name: auth-service
+  datasource:
+    hikari.maximum-pool-size: 8
+  jpa:
+    defer-datasource-initialization: true
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: info
+jwt:
+  secret: ${JWT_SECRET}
+server:
+  port: 8079
