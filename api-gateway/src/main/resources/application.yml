@@ -9,6 +9,14 @@ spring:
       server:
         webflux:
           routes:
+            # Route http://localhost:7950/auth/login -> Api Gateway intercept --> http://localhost:7950/login
+            - id: auth-service-routr
+              uri: http://auth-service:8079
+              predicates:
+                - Path=/auth/**
+              filters:
+                - StripPrefix=1
+
             # Route for /api/patients/** to patient-service
             - id: patient-service-route
               uri: http://patient-service:8080

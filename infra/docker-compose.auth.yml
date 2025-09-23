@@ -8,8 +8,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    ports:
-      - "8079:8079" # todo through API Gateway only as patient-service
     networks:
       - patient-network
     depends_on:
