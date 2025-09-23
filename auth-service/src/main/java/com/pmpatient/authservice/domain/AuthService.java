@@ -2,6 +2,7 @@ package com.pmpatient.authservice.domain;
 
 import com.pmpatient.authservice.config.util.JwtUtil;
 import com.pmpatient.authservice.infrastracture.rest.dto.LoginRequestDto;
+import io.jsonwebtoken.JwtException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,14 @@ public class AuthService {
                         u.getPassword()))
                 .map(u -> jwtUtil.generateToken(u.getEmail(), u.getRole()));
         return token;
+    }
+
+    public boolean validateToken(String jwtToken) {
+        try {
+            jwtUtil.validateToken(jwtToken);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 }
