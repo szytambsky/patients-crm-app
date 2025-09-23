@@ -8,5 +8,7 @@ logging:
   level:
     root: info
     org.hibernate.SQL: info
+jwt:
+  secret: ${JWT_SECRET}
 server:
   port: 8079
