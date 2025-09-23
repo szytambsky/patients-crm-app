@@ -27,10 +27,18 @@ spring:
                 - StripPrefix=1
                 - JwtValidation #JwtValidationGatewayFilterFactory
 
-            # Route for /api/docs/patients to patient-service /v3/api-docs
-            - id: api-docs-patient-service
+            # Route for http://localhost:7950/api-docs/patients to patient-service /v3/api-docs
+            - id: api-docs-patient-route
               uri: http://patient-service:8080
               predicates:
-                - Path=/api-docs/patients/
+                - Path=/api-docs/patients
               filters:
                 - RewritePath=/api-docs/patients, /v3/api-docs
+
+            # Route for http://localhost:7950/api-docs/auth to auth-service /v3/api-docs
+            - id: api-docs-auth-route
+              uri: http://auth-service:8079
+              predicates:
+                - Path=/api-docs/auth
+              filters:
+                - RewritePath=/api-docs/auth, /v3/api-docs
