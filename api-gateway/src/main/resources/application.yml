@@ -1,6 +1,7 @@
 server:
   port: 7950
 # todo: Eureka / Discovery Client
+auth.service.url: ${AUTH_SERVICE_URL}
 spring:
   application:
     name: api-gateway
@@ -9,8 +10,8 @@ spring:
       server:
         webflux:
           routes:
-            # Route http://localhost:7950/auth/login -> Api Gateway intercept --> http://localhost:7950/login
-            - id: auth-service-routr
+            # Route for 7950/auth/** to auth-service
+            - id: auth-service-route
               uri: http://auth-service:8079
               predicates:
                 - Path=/auth/**
@@ -24,6 +25,7 @@ spring:
                 - Path=/api/patients/**
               filters:
                 - StripPrefix=1
+                - JwtValidation #JwtValidationGatewayFilterFactory
 
             # Route for /api/docs/patients to patient-service /v3/api-docs
             - id: api-docs-patient-service
