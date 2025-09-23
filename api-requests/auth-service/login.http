@@ -1,0 +1,10 @@
+### Login request to retrieve a token
+# @no-cookie-jar
+POST http://localhost:8079/login
+Content-Type: application/json
+
+{
+    "email": "testuser@test.com",
+    "password": "password123"
+}
+###
