@@ -1,4 +1,21 @@
 services:
+  auth-service:
+    container_name: auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    build:
+      context: auth-service
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8079:8079" # todo through API Gateway only as patient-service
+    networks:
+      - patient-network
+    depends_on:
+      auth-postgres-db:
+        condition: service_healthy
+
   auth-postgres-db:
     image: postgres:17.6
     restart: always
