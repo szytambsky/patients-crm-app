@@ -1,13 +1,13 @@
 -- Ensure the 'patient' table exists
 CREATE TABLE IF NOT EXISTS patient
 (
-    id              UUID PRIMARY KEY,
-    name            VARCHAR(255)        NOT NULL,
-    email           VARCHAR(255) UNIQUE NOT NULL,
-    address         VARCHAR(255)        NOT NULL,
-    date_of_birth   DATE                NOT NULL,
-    registered_date DATE                NOT NULL
-    );
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    address TEXT NOT NULL,
+    date_of_birth DATE NOT NULL,
+    registered_date DATE NOT NULL
+);
 
 -- Insert well-known UUIDs for specific patients
 INSERT INTO patient (id, name, email, address, date_of_birth, registered_date)
