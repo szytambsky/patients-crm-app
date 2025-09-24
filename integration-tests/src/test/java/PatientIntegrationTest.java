@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class PatientIntegrationTest {
+public class PatientIntegrationTest extends BaseIntegrationTest {
 
     @BeforeAll
     static void setUp() {
@@ -15,23 +15,9 @@ public class PatientIntegrationTest {
 
     @Test
     public void shouldReturnPatientsWithValidToken() {
-        String loginPayload = """
-                {
-                    "email": "testuser@test.com",
-                    "password": "password123"
-                }
-                """;
-        String token = given()
-                .contentType("application/json")
-                .body(loginPayload)
-                .when()
-                .post("/auth/login")
-                .then()
-                .statusCode(200)
-                .extract()
-                .jsonPath()
-                .getString("token");
-
+        String login = "testuser@test.com";
+        String password = "password123";
+        String token = getJwtAuthenticationToken(login, password);
         given()
             .header("Authorization", "Bearer " + token)
             .when()
