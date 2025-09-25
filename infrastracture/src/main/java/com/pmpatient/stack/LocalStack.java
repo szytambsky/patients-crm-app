@@ -1,7 +1,5 @@
 package com.pmpatient.stack;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awscdk.App;
 import software.amazon.awscdk.AppProps;
 import software.amazon.awscdk.BootstraplessSynthesizer;
@@ -11,7 +9,6 @@ import software.amazon.awscdk.StackProps;
 public class LocalStack extends Stack {
 
     private static final String LOCAL_STACK_NAME = "medtechcrm";
-    private static final Logger log = LoggerFactory.getLogger(LocalStack.class);
 
     public LocalStack(final App scope, final String id, final StackProps props) {
         super(scope, id, props);
@@ -22,7 +19,7 @@ public class LocalStack extends Stack {
         StackProps props = convertJavaCodeIntoCloudFormationTemplate();
         new LocalStack(app, LOCAL_STACK_NAME, props);
         app.synth();
-        log.info("App synthesizing in progress...");
+        System.out.println("App synthesizing in progress...");
     }
 
     private static App defineOutputCDKDirectory() {
