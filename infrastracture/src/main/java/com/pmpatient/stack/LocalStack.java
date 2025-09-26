@@ -12,6 +12,8 @@ import software.amazon.awscdk.services.ec2.InstanceClass;
 import software.amazon.awscdk.services.ec2.InstanceSize;
 import software.amazon.awscdk.services.ec2.InstanceType;
 import software.amazon.awscdk.services.ec2.Vpc;
+import software.amazon.awscdk.services.ecs.CloudMapNamespaceOptions;
+import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.msk.CfnCluster;
 import software.amazon.awscdk.services.rds.Credentials;
 import software.amazon.awscdk.services.rds.DatabaseInstance;
@@ -27,6 +29,7 @@ public class LocalStack extends Stack {
     private static final String LOCAL_STACK_NAME = "medtechcrm";
 
     private final Vpc vpc;
+    private final Cluster ecsCluster;
 
     public LocalStack(final App scope, final String id, final StackProps props) {
         super(scope, id, props);
@@ -41,6 +44,7 @@ public class LocalStack extends Stack {
                 createDbHealthCheck(patientServiceDB, "PatientServiceDBHealthCheck");
         CfnCluster mskCluster =
                 createMskCluster();
+        this.ecsCluster = createEcsCluster();
     }
 
     private Vpc createVpc() {
@@ -92,6 +96,15 @@ public class LocalStack extends Stack {
                         .brokerAzDistribution("DEFAULT")
                         .build()
                 ).build();
+    }
+
+    private Cluster createEcsCluster() {
+        return Cluster.Builder.create(this, "PatientManagementCluster")
+                .vpc(vpc)
+                .defaultCloudMapNamespace(CloudMapNamespaceOptions.builder()
+                        .name("patient-management.local")
+                        .build())
+                .build();
     }
 
     public static void main(final String[] args) {
