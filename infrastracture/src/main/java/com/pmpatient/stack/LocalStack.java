@@ -7,16 +7,20 @@ import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.Token;
+import software.amazon.awscdk.services.ec2.ISubnet;
 import software.amazon.awscdk.services.ec2.InstanceClass;
 import software.amazon.awscdk.services.ec2.InstanceSize;
 import software.amazon.awscdk.services.ec2.InstanceType;
 import software.amazon.awscdk.services.ec2.Vpc;
+import software.amazon.awscdk.services.msk.CfnCluster;
 import software.amazon.awscdk.services.rds.Credentials;
 import software.amazon.awscdk.services.rds.DatabaseInstance;
 import software.amazon.awscdk.services.rds.DatabaseInstanceEngine;
 import software.amazon.awscdk.services.rds.PostgresEngineVersion;
 import software.amazon.awscdk.services.rds.PostgresInstanceEngineProps;
 import software.amazon.awscdk.services.route53.CfnHealthCheck;
+
+import java.util.stream.Collectors;
 
 public class LocalStack extends Stack {
 
@@ -35,6 +39,8 @@ public class LocalStack extends Stack {
                 createDbHealthCheck(authServiceDB, "AuthServiceDBHealthCheck");
         CfnHealthCheck patientDbHealthCheck =
                 createDbHealthCheck(patientServiceDB, "PatientServiceDBHealthCheck");
+        CfnCluster mskCluster =
+                createMskCluster();
     }
 
     private Vpc createVpc() {
@@ -70,6 +76,22 @@ public class LocalStack extends Stack {
                         .failureThreshold(3)
                         .build())
                 .build();
+    }
+
+    private CfnCluster createMskCluster() {
+        return CfnCluster.Builder.create(this, "MskCluster")
+                .clusterName("kafka-cluster")
+                .kafkaVersion("3.8.0")
+                .numberOfBrokerNodes(1)
+                .brokerNodeGroupInfo(CfnCluster.BrokerNodeGroupInfoProperty.builder()
+                        .instanceType("kafka.m5.xlarge")
+                        .clientSubnets(vpc.getPrivateSubnets()
+                                .stream()
+                                .map(ISubnet::getSubnetId)
+                                .collect(Collectors.toList()))
+                        .brokerAzDistribution("DEFAULT")
+                        .build()
+                ).build();
     }
 
     public static void main(final String[] args) {
