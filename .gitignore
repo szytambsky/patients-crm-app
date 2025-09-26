@@ -40,3 +40,7 @@ build/
 /*/.mvn/wrapper/maven-wrapper.properties
 /*/.gitattributes
 /*/.env
+
+### Aws Cdk stack app in cloud formation code ###
+/*/cdk.out/
+/*/cdk.out/*
