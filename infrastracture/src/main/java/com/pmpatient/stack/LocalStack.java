@@ -3,6 +3,7 @@ package com.pmpatient.stack;
 import software.amazon.awscdk.App;
 import software.amazon.awscdk.AppProps;
 import software.amazon.awscdk.BootstraplessSynthesizer;
+import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
@@ -22,6 +23,7 @@ import software.amazon.awscdk.services.ecs.FargateTaskDefinition;
 import software.amazon.awscdk.services.ecs.LogDriver;
 import software.amazon.awscdk.services.ecs.PortMapping;
 import software.amazon.awscdk.services.ecs.Protocol;
+import software.amazon.awscdk.services.ecs.patterns.ApplicationLoadBalancedFargateService;
 import software.amazon.awscdk.services.logs.LogGroup;
 import software.amazon.awscdk.services.logs.RetentionDays;
 import software.amazon.awscdk.services.msk.CfnCluster;
@@ -43,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LocalStack extends Stack {
 
@@ -103,6 +106,7 @@ public class LocalStack extends Stack {
         patientService.getNode().addDependency(billingService);
         patientService.getNode().addDependency(mskCluster);
 
+        createApiGatewayService();
     }
 
     private Vpc createVpc() {
@@ -219,6 +223,46 @@ public class LocalStack extends Stack {
                 .assignPublicIp(false)
                 .serviceName(imageName)
                 .build();
+    }
+
+    private void createApiGatewayService() {
+        FargateTaskDefinition taskDefinition =
+                FargateTaskDefinition.Builder.create(this, "APIGatewayTaskDefinition")
+                        .cpu(256)
+                        .memoryLimitMiB(512)
+                        .build();
+        ContainerDefinitionOptions containerDefinitionOptions =
+                ContainerDefinitionOptions.builder()
+                        .image(ContainerImage.fromRegistry("patient-management-api-gateway")) // on prod ECR registry
+                        .environment(Map.of( // localstack does not implement ECS cloud discovery functionality very well we use docker internal service discovery
+                                "SPRING_PROFILES_ACTIVE", "prod", //todo
+                                "AUTH_SERVICE_URL", "http://host.docker.internal:8079"
+                        ))
+                        .portMappings(Stream.of(7950)
+                                .map(port -> PortMapping.builder()
+                                        .containerPort(port)
+                                        .hostPort(port)
+                                        .protocol(Protocol.TCP)
+                                        .build())
+                                .toList())
+                        .logging(LogDriver.awsLogs(AwsLogDriverProps.builder()
+                                .logGroup(LogGroup.Builder.create(this, "ApiGatewayLogGroup")
+                                        .logGroupName("/ecs/patient-management-api-gateway")
+                                        .removalPolicy(RemovalPolicy.DESTROY)
+                                        .retention(RetentionDays.ONE_DAY)
+                                        .build())
+                                .streamPrefix("patient-management-api-gateway")
+                                .build()))
+                        .build();
+        taskDefinition.addContainer("APIGatewayContainer", containerDefinitionOptions);
+        ApplicationLoadBalancedFargateService apiGateway =
+                ApplicationLoadBalancedFargateService.Builder.create(this, "APIGatewayService")
+                        .cluster(ecsCluster)
+                        .serviceName("patient-management-api-gateway")
+                        .taskDefinition(taskDefinition)
+                        .desiredCount(1)
+                        .healthCheckGracePeriod(Duration.seconds(60))
+                        .build();
     }
 
     private static SecretsManagerClient createSecretManagerClient() {
