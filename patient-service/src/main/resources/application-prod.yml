@@ -16,7 +16,9 @@ spring:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
 billing:
   service:
-    address: billing-service
+    address: ${BILLING_SERVICE_ADDRESS}
+    grpc:
+      port: ${BILLING_SERVICE_GRPC_PORT}
 logging:
   level:
     org.springframework: info
