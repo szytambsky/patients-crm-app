@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 
 public class LocalStack extends Stack {
 
-    private static final String LOCAL_STACK_NAME = "medtechcrm";
+    private static final String LOCAL_STACK_NAME = "localstack";
 
     private final Vpc vpc;
     private final Cluster ecsCluster;
@@ -61,9 +61,9 @@ public class LocalStack extends Stack {
         this.secretsManagerClient = createSecretManagerClient();
 
         DatabaseInstance authServiceDB =
-                createDatabase("AuthServiceDB", "auth-service-db");
+                createDatabase("AuthServiceDB", "patient-management-auth-service-db");
         DatabaseInstance patientServiceDB =
-                createDatabase("PatientServiceDB", "patient-service-db");
+                createDatabase("PatientServiceDB", "patient-management-patient-service-db");
         CfnHealthCheck authDbHealthCheck =
                 createDbHealthCheck(authServiceDB, "AuthServiceDBHealthCheck");
         CfnHealthCheck patientDbHealthCheck =
@@ -120,13 +120,12 @@ public class LocalStack extends Stack {
         return DatabaseInstance.Builder.create(this, id)
                 .engine(DatabaseInstanceEngine.postgres(
                         PostgresInstanceEngineProps.builder()
-                            .version(PostgresEngineVersion.VER_17_6)
-                            .build()))
+                                .version(PostgresEngineVersion.VER_17_2)
+                                .build()))
                 .vpc(vpc)
-                .instanceType(InstanceType.of(InstanceClass.BURSTABLE2,
-                        InstanceSize.MICRO))
-                .allocatedStorage(12)
-                .credentials(Credentials.fromGeneratedSecret("admin_user"))
+                .instanceType(InstanceType.of(InstanceClass.BURSTABLE2, InstanceSize.MICRO))
+                .allocatedStorage(20)
+                .credentials(Credentials.fromGeneratedSecret("postgres"))
                 .databaseName(dbName)
                 .removalPolicy(RemovalPolicy.DESTROY)
                 .build();
@@ -148,7 +147,7 @@ public class LocalStack extends Stack {
         return CfnCluster.Builder.create(this, "MskCluster")
                 .clusterName("kafka-cluster")
                 .kafkaVersion("3.8.0")
-                .numberOfBrokerNodes(1)
+                .numberOfBrokerNodes(vpc.getPrivateSubnets().size())
                 .brokerNodeGroupInfo(CfnCluster.BrokerNodeGroupInfoProperty.builder()
                         .instanceType("kafka.m5.xlarge")
                         .clientSubnets(vpc.getPrivateSubnets()
@@ -201,13 +200,14 @@ public class LocalStack extends Stack {
         Map<String, String> envVars = new HashMap<>();
         envVars.put("SPRING_KAFKA_BOOTSTRAP_SERVERS",
                 "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512");
+        envVars.put("SPRING_PROFILES_ACTIVE", "prod");
         if (additionalEnvVars != null) envVars.putAll(additionalEnvVars);
         if (db != null) {
             envVars.put("SPRING_DATASOURCE_URL", "jdbc:postgresql://%s:%s/%s-db".formatted(
                     db.getDbInstanceEndpointAddress(),
                     db.getDbInstanceEndpointPort(),
                     imageName));
-            envVars.put("SPRING_DATASOURCE_USERNAME", "admin_user");
+            envVars.put("SPRING_DATASOURCE_USERNAME", "postgres");
             envVars.put("SPRING_DATASOURCE_PASSWORD",
                     db.getSecret().secretValueFromJson("password").toString());
             envVars.put("SPRING_JPA_HIBERNATE_DDL_AUTO", "update");
@@ -235,7 +235,7 @@ public class LocalStack extends Stack {
                 ContainerDefinitionOptions.builder()
                         .image(ContainerImage.fromRegistry("patient-management-api-gateway")) // on prod ECR registry
                         .environment(Map.of( // localstack does not implement ECS cloud discovery functionality very well we use docker internal service discovery
-                                "SPRING_PROFILES_ACTIVE", "prod", //todo
+                                "SPRING_PROFILES_ACTIVE", "localstack",
                                 "AUTH_SERVICE_URL", "http://host.docker.internal:8079"
                         ))
                         .portMappings(Stream.of(7950)
