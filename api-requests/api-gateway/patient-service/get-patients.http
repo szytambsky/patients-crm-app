@@ -1,4 +1,9 @@
 ### GET request to get all patients
-GET http://localhost:7950/api/patients
+GET http://localhost:7950/api/patients/all
+Authorization: Bearer {{token}}
+###
+
+### GET request to get all patients
+GET http://localhost:7950/api/patients?size=5&page=1&sort=asc&searchValue=John
 Authorization: Bearer {{token}}
 ###

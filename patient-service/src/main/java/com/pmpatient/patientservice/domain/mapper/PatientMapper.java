@@ -1,12 +1,15 @@
 package com.pmpatient.patientservice.domain.mapper;
 
 import com.pmpatient.patientservice.infrastracture.input.PatientRequestDto;
+import com.pmpatient.patientservice.infrastracture.output.PagedPatientResponseDto;
 import com.pmpatient.patientservice.infrastracture.output.PatientResponseDto;
 import com.pmpatient.patientservice.domain.model.Patient;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class PatientMapper {
@@ -29,6 +32,16 @@ public class PatientMapper {
         patient.setDateOfBirth(LocalDate.parse(patientRequestDto.getDateOfBirth(), DateTimeFormatter.ISO_DATE));
         patient.setRegisteredDate(LocalDate.parse(patientRequestDto.getRegisteredDate()));
         return patient;
+    }
+
+    public static PagedPatientResponseDto toPagedResponseDto(List<PatientResponseDto> patientsResponseDto, Page<Patient> patientPage) {
+        PagedPatientResponseDto pagedPatientResponseDto = new PagedPatientResponseDto();
+        pagedPatientResponseDto.setPatients(patientsResponseDto);
+        pagedPatientResponseDto.setPage(patientPage.getNumber() + 1);
+        pagedPatientResponseDto.setSize(patientPage.getSize());
+        pagedPatientResponseDto.setTotalPages(patientPage.getTotalPages());
+        pagedPatientResponseDto.setTotalElements((int) patientPage.getTotalElements());
+        return pagedPatientResponseDto;
     }
 
     private static String retrieveDigitalDateRecordingWithSeparate() {
