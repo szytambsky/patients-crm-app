@@ -1,6 +1,9 @@
 spring:
   application:
     name: billing-service
+  kafka.consumer:
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
 logging.level.root: info
 server:
   port: 8081

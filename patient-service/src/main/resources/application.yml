@@ -12,7 +12,22 @@ spring:
     redis:
       host: ${SPRING_DATA_REDIS_HOST}
       port: ${SPRING_DATA_REDIS_PORT}
-
+# if 50% of last 10 calls have failed, open circuit keep open for 10s before test if grpc billingRequest succeeding again
+resilience4j:
+  circuitbreaker:
+    instances:
+      billingService:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  retry:
+    instances:
+      billingRetry:
+        maxAttempts: 2
+        waitDuration: 500ms
 server:
   port: 8080
 grpc:

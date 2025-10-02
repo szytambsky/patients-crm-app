@@ -3,6 +3,9 @@ package com.pmpatient.patientservice.grpc;
 import billing.BillingRequest;
 import billing.BillingResponse;
 import billing.BillingServiceGrpc;
+import com.pmpatient.patientservice.infrastracture.kafka.KafkaProducer;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
@@ -15,16 +18,21 @@ public class BillingServiceGrpcClient {
 
     private static final Logger log = LoggerFactory.getLogger(BillingServiceGrpcClient.class);
     private final BillingServiceGrpc.BillingServiceBlockingStub blockingStub;
+    private final KafkaProducer kafkaProducer;
 
     // GRPC localhost:9090/BillingService/CreateBillingAccount
     public BillingServiceGrpcClient(@Value("${billing.service.address:localhost}") String billingServerAddress,
-                                    @Value("${billing.service.grpc.port:9091}") int billingServerPort) {
+                                    @Value("${billing.service.grpc.port:9091}") int billingServerPort,
+                                    KafkaProducer kafkaProducer) {
         log.info("Connecting to Billing Service GRPC service at {}:{}",
                 billingServerAddress, billingServerPort);
         ManagedChannel channel = ManagedChannelBuilder.forAddress(billingServerAddress, billingServerPort).usePlaintext().build();
         this.blockingStub = BillingServiceGrpc.newBlockingStub(channel);
+        this.kafkaProducer = kafkaProducer;
     }
 
+    @CircuitBreaker(name = "billingService", fallbackMethod = "billingFallback")
+    @Retry(name = "billingRetry")
     public BillingResponse createBillingAccount(String patientId, String name, String email) {
         BillingRequest billingRequest = BillingRequest.newBuilder()
                 .setPatientId(patientId)
@@ -34,5 +42,14 @@ public class BillingServiceGrpcClient {
         BillingResponse billingResponse = blockingStub.createBillingAccount(billingRequest);
         log.info("Received response from billing service via GRPC: {}", billingResponse);
         return billingResponse;
+    }
+
+    public BillingResponse billingFallback(String patientId, String name, String email, Throwable t) {
+        log.warn("[CIRCUIT BREAKER]: BillingService is unavailable. Triggered fallback: {}", t.getMessage());
+        kafkaProducer.sendBillingAccountEvent(patientId, name, email);
+        return BillingResponse.newBuilder()
+                .setAccountId("")
+                .setStatus("PENDING")
+                .build();
     }
 }
