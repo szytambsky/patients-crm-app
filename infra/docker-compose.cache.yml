@@ -1,0 +1,22 @@
+services:
+
+  redis:
+    image: redis:8.2.1-alpine
+    container_name: redis
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: [ "redis-server", "--save", "60", "1" ]
+    networks:
+      - patient-network
+
+volumes:
+  redis-data:
+
+networks:
+  patient-network:
+    external: true
