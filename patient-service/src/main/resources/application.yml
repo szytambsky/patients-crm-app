@@ -6,6 +6,13 @@ spring:
   kafka.producer:
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
     value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+  cache:
+    type: ${SPRING_CACHE_TYPE}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+
 server:
   port: 8080
 grpc:

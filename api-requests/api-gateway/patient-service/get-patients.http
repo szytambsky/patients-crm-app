@@ -3,7 +3,12 @@ GET http://localhost:7950/api/patients/all
 Authorization: Bearer {{token}}
 ###
 
-### GET request to get all patients
+### GET request to get paged patients
 GET http://localhost:7950/api/patients?size=5&page=1&sort=asc&searchValue=John
+Authorization: Bearer {{token}}
+###
+
+### GET request to get CACHED paged patients on empty searchValue
+GET http://localhost:7950/api/patients?size=5&page=1&sort=asc
 Authorization: Bearer {{token}}
 ###
