@@ -3,6 +3,8 @@ package com.pmpatient.patientservice.grpc;
 import billing.BillingRequest;
 import billing.BillingResponse;
 import billing.BillingServiceGrpc;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ public class BillingServiceGrpcClient {
         this.blockingStub = BillingServiceGrpc.newBlockingStub(channel);
     }
 
+    @CircuitBreaker(name = "billingService", fallbackMethod = "billingFallback")
     public BillingResponse createBillingAccount(String patientId, String name, String email) {
         BillingRequest billingRequest = BillingRequest.newBuilder()
                 .setPatientId(patientId)
