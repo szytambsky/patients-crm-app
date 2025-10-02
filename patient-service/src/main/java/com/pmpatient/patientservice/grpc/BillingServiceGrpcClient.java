@@ -28,6 +28,7 @@ public class BillingServiceGrpcClient {
     }
 
     @CircuitBreaker(name = "billingService", fallbackMethod = "billingFallback")
+    @Retry(name = "billingRetry")
     public BillingResponse createBillingAccount(String patientId, String name, String email) {
         BillingRequest billingRequest = BillingRequest.newBuilder()
                 .setPatientId(patientId)
