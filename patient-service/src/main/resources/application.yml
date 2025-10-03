@@ -28,6 +28,18 @@ resilience4j:
       billingRetry:
         maxAttempts: 2
         waitDuration: 500ms
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics,cache
+  endpoint:
+    prometheus:
+      access: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   port: 8080
 grpc:
