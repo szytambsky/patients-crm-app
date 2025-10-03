@@ -56,7 +56,8 @@ docker compose -f ./docker-compose.prod.yml \
                -f infra/docker-compose.kafka.yml \
                -f infra/docker-compose.gateway.yml \
                -f infra/docker-compose.auth.yml \
-               -f infra/docker-compose.cache.yml up -d --build --force-recreate
+               -f infra/docker-compose.cache.yml \
+               -f monitoring/docker-compose.monitoring.yml up -d --build --force-recreate
 ```
 
 

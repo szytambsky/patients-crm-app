@@ -1,0 +1,30 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml # single file config bind mount
+      - prometheus-data:/prometheus # named volume managed by docker -> docker volume inspect
+      #- ./prometheus-data:/prometheus # bind mount host catalog to container /prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - patient-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - patient-network
+
+volumes:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  patient-network:
+    external: true
