@@ -1,6 +1,8 @@
 services:
   auth-service:
     container_name: auth-service
+    image: auth-service:latest
+    pull_policy: never
     environment:
       SPRING_PROFILES_ACTIVE: prod
     build:

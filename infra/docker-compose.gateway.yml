@@ -3,6 +3,8 @@ services:
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
+    image: api-gateway:latest
+    pull_policy: never
     env_file:
       - .env
     ports:

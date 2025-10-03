@@ -3,6 +3,8 @@ services:
   billing-service:
     build: ./billing-service
     container_name: billing_service
+    image: billing-service:latest
+    pull_policy: never
     env_file:
       - .env
     environment:
@@ -16,6 +18,8 @@ services:
   analytics-service:
     build: ./analytics-service
     container_name: analytics-service
+    image: analytics-service:latest
+    pull_policy: never
     restart: always
     env_file:
       - .env
