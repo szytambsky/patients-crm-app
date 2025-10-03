@@ -61,9 +61,9 @@ public class LocalStack extends Stack {
         this.secretsManagerClient = createSecretManagerClient();
 
         DatabaseInstance authServiceDB =
-                createDatabase("AuthServiceDB", "patient-management-auth-service-db");
+                createDatabase("AuthServiceDB", "auth-service-db");
         DatabaseInstance patientServiceDB =
-                createDatabase("PatientServiceDB", "patient-management-patient-service-db");
+                createDatabase("PatientServiceDB", "patient-service-db");
         CfnHealthCheck authDbHealthCheck =
                 createDbHealthCheck(authServiceDB, "AuthServiceDBHealthCheck");
         CfnHealthCheck patientDbHealthCheck =
@@ -73,7 +73,7 @@ public class LocalStack extends Stack {
         this.ecsCluster = createEcsCluster();
 
         FargateService authService = createFargateService("AuthService",
-                "patient-management-auth-service",
+                "auth-service",
                 List.of(8079),
                 authServiceDB,
                 Map.of("JWT_SECRET", getSecretOfName("jwtSecret")));
@@ -81,20 +81,20 @@ public class LocalStack extends Stack {
         authService.getNode().addDependency(authServiceDB);
 
         FargateService billingService = createFargateService("BillingService",
-                "patient-management-billing-service",
+                "billing-service",
                 List.of(8081, 9091),
                 null,
                 null);
 
         FargateService analyticsService = createFargateService("AnalyticsService",
-                "patient-management-analytics-service",
+                "analytics-service",
                 List.of(8082),
                 null,
                 null);
         analyticsService.getNode().addDependency(mskCluster);
 
         FargateService patientService = createFargateService("PatientService",
-                "patient-management-patient-service",
+                "patient-service",
                 List.of(8080),
                 patientServiceDB,
                 Map.of( // localstack does not implement ECS cloud discovery functionality
@@ -233,7 +233,7 @@ public class LocalStack extends Stack {
                         .build();
         ContainerDefinitionOptions containerDefinitionOptions =
                 ContainerDefinitionOptions.builder()
-                        .image(ContainerImage.fromRegistry("patient-management-api-gateway")) // on prod ECR registry
+                        .image(ContainerImage.fromRegistry("api-gateway")) // on prod ECR registry
                         .environment(Map.of( // localstack does not implement ECS cloud discovery functionality very well we use docker internal service discovery
                                 "SPRING_PROFILES_ACTIVE", "localstack",
                                 "AUTH_SERVICE_URL", "http://host.docker.internal:8079"
@@ -247,18 +247,18 @@ public class LocalStack extends Stack {
                                 .toList())
                         .logging(LogDriver.awsLogs(AwsLogDriverProps.builder()
                                 .logGroup(LogGroup.Builder.create(this, "ApiGatewayLogGroup")
-                                        .logGroupName("/ecs/patient-management-api-gateway")
+                                        .logGroupName("/ecs/api-gateway")
                                         .removalPolicy(RemovalPolicy.DESTROY)
                                         .retention(RetentionDays.ONE_DAY)
                                         .build())
-                                .streamPrefix("patient-management-api-gateway")
+                                .streamPrefix("api-gateway")
                                 .build()))
                         .build();
         taskDefinition.addContainer("APIGatewayContainer", containerDefinitionOptions);
         ApplicationLoadBalancedFargateService apiGateway =
                 ApplicationLoadBalancedFargateService.Builder.create(this, "APIGatewayService")
                         .cluster(ecsCluster)
-                        .serviceName("patient-management-api-gateway")
+                        .serviceName("api-gateway")
                         .taskDefinition(taskDefinition)
                         .desiredCount(1)
                         .healthCheckGracePeriod(Duration.seconds(60))
