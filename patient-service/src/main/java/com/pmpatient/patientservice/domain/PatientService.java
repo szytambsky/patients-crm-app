@@ -25,7 +25,6 @@ import java.util.UUID;
 
 @Service
 public class PatientService {
-    private static final Logger log = LoggerFactory.getLogger(PatientService.class);
     private final PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
     private final KafkaProducer kafkaProducer;
@@ -60,7 +59,6 @@ public class PatientService {
             condition = "#searchValue == ''"
     )
     public PagedPatientResponseDto getPatients(int page, int size, String sort, String sortField, String searchValue) {
-        log.info("[REDIS]: Cache missing - fetching from db.");
         Pageable pageable = PageRequest.of(
                 page > 0 ? page - 1 : 0,
                 size,
