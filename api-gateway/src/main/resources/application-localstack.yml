@@ -5,20 +5,24 @@ auth.service.url: ${AUTH_SERVICE_URL}
 spring:
   application:
     name: api-gateway
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
   cloud:
     gateway:
       server:
         webflux:
           routes:
             - id: auth-service-route
-              uri: http://host.docker.internal:8079
+              uri: http://auth-service.patient-management.local:8079
               predicates:
                 - Path=/auth/**
               filters:
                 - StripPrefix=1
 
             - id: patient-service-route
-              uri: http://host.docker.internal:8080
+              uri: http://patient-service.patient-management.local:8080
               predicates:
                 - Path=/api/patients/**
               filters:
@@ -26,14 +30,14 @@ spring:
                 - JwtValidation
 
             - id: api-docs-patient-route
-              uri: http://host.docker.internal:8080
+              uri: http://patient-service.patient-management.local:8080
               predicates:
                 - Path=/api-docs/patients
               filters:
                 - RewritePath=/api-docs/patients, /v3/api-docs
 
             - id: api-docs-auth-route
-              uri: http://host.docker.internal:8079
+              uri: http://auth-service.patient-management.local:8079
               predicates:
                 - Path=/api-docs/auth
               filters:
