@@ -99,8 +99,8 @@ public class LocalStack extends Stack {
                 "patient-service",
                 List.of(8080),
                 patientServiceDB,
-                Map.of( // localstack does not implement ECS cloud discovery functionality
-                        "BILLING_SERVICE_ADDRESS", "host.docker.internal",
+                Map.of( // change use from docker implicit dns networking to ECS cloud discovery functionality with patient-management.local namespace
+                        "BILLING_SERVICE_ADDRESS", "billing-service.patient-management.local",
                         "BILLING_SERVICE_GRPC_PORT", "9091"
                 ));
         patientService.getNode().addDependency(patientServiceDB);
@@ -240,9 +240,9 @@ public class LocalStack extends Stack {
         ContainerDefinitionOptions containerDefinitionOptions =
                 ContainerDefinitionOptions.builder()
                         .image(ContainerImage.fromRegistry("api-gateway")) // on prod ECR registry
-                        .environment(Map.of( // localstack does not implement ECS cloud discovery functionality very well we use docker internal service discovery
+                        .environment(Map.of( // now: ECS cloud discovery, before: docker dns networking: "http://host.docker.internal:8079"
                                 "SPRING_PROFILES_ACTIVE", "localstack",
-                                "AUTH_SERVICE_URL", "http://host.docker.internal:8079"
+                                "AUTH_SERVICE_URL", "http://auth-service.patient-management.local:8079"
                         ))
                         .portMappings(Stream.of(7950)
                                 .map(port -> PortMapping.builder()
