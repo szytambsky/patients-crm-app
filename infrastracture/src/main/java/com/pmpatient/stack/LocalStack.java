@@ -329,7 +329,6 @@ public class LocalStack extends Stack {
                 .build());
         ApplicationLoadBalancedFargateService service = ApplicationLoadBalancedFargateService.Builder
                 .create(this, "GrafanaUIService")
-                .cluster(ecsCluster)
                 .taskDefinition(taskDefinition)
                 .publicLoadBalancer(true)
                 .listenerPort(3000)
