@@ -309,7 +309,7 @@ public class LocalStack extends Stack {
                 .create(this, "RedisCluster")
                 .cacheNodeType("cache.t2.micro")
                 .engine("redis")
-                .numCacheNodes(vpc.getPrivateSubnets().size())
+                .numCacheNodes(1)
                 .cacheSubnetGroupName(redisSubnetGroup.getCacheSubnetGroupName())
                 .vpcSecurityGroupIds(List.of(vpc.getVpcDefaultSecurityGroup()))
                 .build();

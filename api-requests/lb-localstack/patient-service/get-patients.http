@@ -1,4 +1,14 @@
 ### GET request to get all patients
-GET http://lb-4584f3f5.elb.localhost.localstack.cloud:7950/api/patients
+GET http://lb-5b575546.elb.localhost.localstack.cloud:7950/api/patients/all
+Authorization: Bearer {{token}}
+###
+
+### GET request to get paged patients
+GET http://lb-5b575546.elb.localhost.localstack.cloud:7950/api/patients?size=5&page=1&sort=asc&searchValue=John
+Authorization: Bearer {{token}}
+###
+
+### GET request to get CACHED paged patients on empty searchValue
+GET http://lb-5b575546.elb.localhost.localstack.cloud:7950/api/patients?size=5&page=1&sort=asc
 Authorization: Bearer {{token}}
 ###

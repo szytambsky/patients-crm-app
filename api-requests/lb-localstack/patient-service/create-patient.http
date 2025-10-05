@@ -1,5 +1,5 @@
 ### Creates a new patient entity
-POST http://lb-4584f3f5.elb.localhost.localstack.cloud:7950/api/patients
+POST http://lb-5b575546.elb.localhost.localstack.cloud:7950/api/patients
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
