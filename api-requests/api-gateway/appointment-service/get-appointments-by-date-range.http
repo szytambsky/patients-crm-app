@@ -1,0 +1,11 @@
+### GET request for appointments between date request query parameters (from, to)
+GET http://localhost:8083/appointments?from=2025-12-01T00:00:00&to=2025-12-10T23:59:59
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET request with wider range
+GET http://localhost:8083/appointments?from=2025-12-01T00:00:00&to=2025-12-21T23:59:59
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
