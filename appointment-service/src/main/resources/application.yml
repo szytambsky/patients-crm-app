@@ -1,5 +1,11 @@
 spring:
   application:
     name: appointment-service
+  datasource:
+    hikari.maximum-pool-size: 8
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: info
 server:
   port: 8083

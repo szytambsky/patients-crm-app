@@ -46,6 +46,24 @@ services:
     networks:
       - patient-network
 
+  appointment-service:
+    build: ./appointment-service
+    container_name: appointment-service
+    image: appointment-service:latest
+    pull_policy: never
+    restart: always
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8083:8083"
+    networks:
+      - patient-network
+    depends_on:
+      appointment-postgres-db:
+        condition: service_healthy
+
   postgres-db:
     image: postgres:17.6
     restart: always
@@ -63,6 +81,27 @@ services:
       - patient-network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  appointment-postgres-db:
+    image: postgres:17.6
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${APPOINTMENT_POSTGRES_DB}
+    volumes:
+      - appointment_pgdata:/var/lib/postgresql/data
+    networks:
+      - patient-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${APPOINTMENT_POSTGRES_DB}" ]
       interval: 1s
       timeout: 5s
       retries: 10
@@ -89,6 +128,7 @@ services:
 volumes:
   pgdata:
   pgadmin-data:
+  appointment_pgdata:
 
 networks:
   patient-network:
