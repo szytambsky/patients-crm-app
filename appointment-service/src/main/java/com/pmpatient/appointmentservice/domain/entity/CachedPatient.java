@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "cached_patients")
+@Table(name = "cached_patient")
 public class CachedPatient {
     @Id
     private UUID id;
