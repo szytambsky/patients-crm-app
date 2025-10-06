@@ -9,8 +9,6 @@ import com.pmpatient.patientservice.infrastracture.kafka.KafkaProducer;
 import com.pmpatient.patientservice.infrastracture.output.PagedPatientResponseDto;
 import com.pmpatient.patientservice.infrastracture.output.PatientResponseDto;
 import com.pmpatient.patientservice.domain.model.Patient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -81,7 +79,7 @@ public class PatientService {
         doesEmailAlreadyExists(patientRequestDto);
         Patient newPatient = patientRepository.save(PatientMapper.toModel(patientRequestDto));
         billingServiceGrpcClient.createBillingAccount(newPatient.getId().toString(), newPatient.getName(), newPatient.getEmail());
-        kafkaProducer.sendEvent(newPatient);
+        kafkaProducer.sendPatientCreatedEvent(newPatient);
         return PatientMapper.toResponseDto(newPatient);
     }
 
@@ -97,6 +95,7 @@ public class PatientService {
         patient.setEmail(patientRequestDto.getEmail());
         patient.setDateOfBirth(LocalDate.parse(patientRequestDto.getDateOfBirth()));
         Patient updatedPatient = patientRepository.save(patient);
+        kafkaProducer.sendPatientUpdatedEvent(updatedPatient);
         return PatientMapper.toResponseDto(updatedPatient);
     }
 
