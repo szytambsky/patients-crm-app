@@ -13,3 +13,9 @@ spring:
       ddl-auto: update
     show-sql: true
   sql.init.mode: always
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:appointment-service}
