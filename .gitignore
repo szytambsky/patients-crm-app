@@ -44,3 +44,6 @@ build/
 ### Aws Cdk stack app in cloud formation code ###
 /*/cdk.out/
 /*/cdk.out/*
+
+# Os
+.DS_Store
